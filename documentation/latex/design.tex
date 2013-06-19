@@ -1,0 +1,182 @@
+
+\documentclass{article}
+
+\usepackage{url}
+
+% variables
+\newcommand{\blockWidth}{w}
+\newcommand{\blockLength}{l}
+\newcommand{\blockHeight}{h}
+\newcommand{\blockDataSize}{sz}
+\newcommand{\targetFPS}{60 fps }
+\newcommand{\playerLoadDistance}{$P_{loadDist}$}
+
+\begin{document}
+\title{Documentation for MyCraft}
+\author{Christopher Gammage}
+\maketitle
+
+\section{Components}
+
+The system will be composed of the following components.
+
+\subsection{Viewport Renderer}
+The Viewport Renderer handles rendering 3d data to the display.  It is responsible for all 3d transformations and optimizations.  It handles culling and uses either a 3d rendering library for performance.
+
+\subsubsection{Requirements}
+\begin{enumerate}
+\item
+Viewport should be able to render chunks (section \ref{def:chunk}).
+\item
+Viewport should be able to render blocks (section \ref{def:block}).
+\item
+Renderer should utilize an abstraction layer to access either OpenGL or DirectX.
+\item
+Renderer should be able to render textures on blocks.
+\item
+Renderer should be able to render non-block items, called Items.
+\item
+Renderer should support particle effects.
+\item
+Renderer should be able to maintain at least \targetFPS on a medium end machine.
+Need to research the spec for minimum machine.
+\item 
+Renderer should only make a single render call for each chunk.
+\item
+Renderer should have a lighting system.
+\item
+When building display list for chunk, consider occluded triangles by neighbor edges.
+\item
+Don't render surrounded chunks.
+\item
+Optimize for triangle face merging...
+\item
+Need to decide whether or not to use textures!
+\item 
+don't store texture coordinates, generate at runtime.
+\item
+use a texture atlas.
+\item
+use frustum culling.
+\item
+Allow voxel sprites using independent systems of rendering...
+optimize by replicating the display list.
+\item
+Quaternions vs. Euler rotations? Gimble lock?
+\end{enumerate}
+
+\subsubsection{Rendering}
+For performance it is important to understand Immediate mode, Vertex Buffers, and Display Lists.  During creation of the display list for a chunk, it converts blocks to triangle meshes.  Only active blocks are added.
+
+\subsection{UI Renderer}
+The UI Renderer handles the rendering of UI components in 2D on the screen.  It is above the Viewport Rendering.  It displays widgets, text, and other user HUD related stuff.
+\subsection{Main Loop}
+The main loop is the piece of code that ties the rest of the components together.  It calls methods of the other components and continuously loops.  It is kept in time by the Time Manager.
+\subsection{UI Manager}
+The UI Manager handles all user interface interactions except the actual display of user interface.  This means the UI manager handles mouse and keyboard events as well as sound output.
+
+\subsubsection{Requirements}
+\begin{enumerate}
+\item
+Should modify the camera state.
+\end{enumerate}
+
+\subsection{Time Manager}
+The time manager keeps track of both rendering times and game update times.  It is responsible for making sure that the game doesn't run too fast and tries to keep it from running too slow.
+\subsection{Plugin Manager}
+The plugin manager loads LUA plugins from the plugins folder.  It controls initialization, disabling and enabling.  It handles dependencies and connects the plugins into the appropriate other components of the system.  It should be responsible for making sure LUA code is secure.
+\subsection{Event Bus}
+The event bus handles the events of the system. It is a singleton accessible from any component.  It uses a publish and subscribe model.
+\subsection{Logger}
+The logger is a singleton accessible from anywhere in the system. It does tree based logging.  Need to find a file format for the logs that has an easy viewer.
+\subsection{Scheduler}
+The scheduler uses the timer to delay release events into the system.  It also allows batch events and event chains.
+\subsection{AI Engine}
+The AI engine is responsible for updating the game state to reflect artificial intelligence.  This means it moves mobs and causes them to act.
+\subsection{LUA Engine}
+The LUA engine is a system accessible to plugins which allows them to programatically affect the game state. 
+
+\subsection{Physics Engine}
+The physics engine is responsible for all game updates that are not to do with AI.  This means gravity, acceleration, water, fire.. etc.
+\subsubsection{Requirements}
+\begin{enumerate}
+\item
+Responsible for collision detection.
+\end{enumerate}
+
+\subsubsection{Requirements}
+\begin{enumerate}
+\item
+Is responsible for force loading the chunks surrounding the player in \playerLoadDistance .
+\end{enumerate}
+
+\subsection{Network Manager}
+Handles communication of events across the network.  
+\subsection{Data Manager}
+The data manager is responsible for the persistence of all world data.
+It is the master of all game state.  It should abstract all data loading to asynchronous processes.
+
+\subsubsection{Chunk Manager}
+Need to decide whether to use array or vector based chunk manager.
+
+\paragraph{Requirements}
+\begin{enumerate}
+\item 
+Chunk manager should manage unloading of chunks.
+\item
+Chunk Manager should have a distinction between chunks in visible distance and chunks in render frustum.
+\item 
+Chunk Loading should be asynchronous.
+\item
+Chunks should be rebuilt after being modified.
+\item
+Keep track of chunks that are empty.
+\end{enumerate}
+
+\subsubsection{World Generator}
+The world generation module is responsible for generating the world.
+It should create different landscape features based on plugins guidance.
+Try to use libnoise\cite{libnoise} for terrain generation.
+
+\section{Data Types}
+\subsection{Blocks}
+\label{def:block}
+\subsubsection{Requirements}
+\begin{enumerate}
+\item
+Block must have an on-off state
+\item
+Render blocks of size $B_{lwh} = \{\blockLength, \blockWidth, \blockHeight\}$ 
+in 3D space.
+\item
+Blocks should have $B_{dataSz} = \blockDataSize$ amount of storage embedded.
+\item
+Blocks should belong in data structure that facilitates fast rendering.
+\item
+Blocks should belong in a data structure that facilitates fast disk save/load.
+\end{enumerate}
+\subsection{Chunks}
+\label{def:chunk}
+\subsubsection{Requirements}
+\begin{enumerate}
+\item
+Chunks groups of blocks of size $C_{lwh}$. It is too be decided whether or not a 
+chunk will extend from level 0 to the ceiling of the world.
+\item
+We need to find the best chunk size to use.
+\end{enumerate}
+\subsubsection{Finding the right chunk size}
+Larger chunk sizes = less rendering overhead, but also larger chunk sizes = slower rebuild times\cite{voxpage}.
+
+\begin{thebibliography}{9}
+
+\bibitem{voxpage}
+Let's Make a Voxel Engine by AlwaysGeeky.
+\url{https://sites.google.com/site/letsmakeavoxelengine/home/chunks}
+
+\bibitem{libnoise}
+Libnoise noise for terrain generation.
+\url{http://libnoise.sourceforge.net/}
+\end{thebibliography}
+
+\end{document}
