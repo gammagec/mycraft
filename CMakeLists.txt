@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 2.8)
+
+project(MyCraft)
+
+add_subdirectory(src/AIEngine)
+add_subdirectory(src/DataManager)
+add_subdirectory(src/EventBus)
+add_subdirectory(src/Logger)
+add_subdirectory(src/MainLoop)
+add_subdirectory(src/NetworkManager)
+add_subdirectory(src/PhysicsEngine)
+add_subdirectory(src/PluginManager)
+add_subdirectory(src/ScriptEngine)
+add_subdirectory(src/TimeManager)
+add_subdirectory(src/UIManager)
+add_subdirectory(src/UIRenderer)
+add_subdirectory(src/ViewportRenderer)

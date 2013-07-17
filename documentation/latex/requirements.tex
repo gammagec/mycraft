@@ -16,21 +16,46 @@
 \maketitle
 
 \begin{abstract}
-MyCraft is highly customized sandbox multiplayer block building game engine.  It uses a built in scripting engine to allow developers to create plugins that build the game.  
+MyCraft is highly customizable sandbox multiplayer block building game engine.  It uses a built in scripting engine to allow developers to create plugins that build the game. 
+Every aspect of the engine should be swappable with Plugin Components.  Every plugin should
+have a high degree of configurability.   
 \end{abstract}
 
 \tableofcontents
 
 \section{Strategy and Overview}
 \subsection{Goals and Objectives}
+The goal of this game engine is to create an open source block based engine that others
+can make games out of.  Any person who knows C++ and reads the development guide, should
+be able to create a plugin and modify they game however they see fit.  It should allow
+multiplayer and have a means for syncing plugin configurations.
 \subsection{Strategic Roadmap}
+The first beta of the game should have the overall structure of the plugin framework
+and have a few default plugins already existing.  It should have a rudimentary 
+world generation module and allow people to play around in the sandbox.  When
+the system is stable enough that a plugin developer can make a full game out of it, it
+will be released as version 1.0.  The game will grow through a plugin developer 
+community and their their interactions with the players.
 \subsection{Customer Categories}
+There are two customer targets.  The first are the players of the game and the second
+are the plugin developers.  Plugin developers are also players.  The age range of players
+could be anywhere between 6 and 65.  The game should not contain anything offensive for
+any customer in that range.
 \subsection{Competitive Strengths and Weaknesses}
-
+One advantage of this game / engine over other similar games will be that it is 
+out of the box completely customizeable.  There will be a strong plugin API that will
+make plugin development easy.  It will be OS-independent and because of it's native
+C++ code, it should have great performance.  Since it will be open source and community driven, there will be more flexability in how the game engine develops. 
 \section{Bill of Materials}
+
 \subsection{The Game Client}
 \subsection{The Game Server}
-
+\subsection{Development SDK}
+The SDK will make it easy for plugin developers to start working on plugins for the game.
+\subsection{Development Guide}
+A guide for making plugins is very important.  Plugin developers are what will make the
+game successful and they should be able to easily learn the SDK.  It should include the
+fully documented plugin API as well as several tutorials on how to use common features.
 \section{Internally Committed Requirements}
 
 \section{Externally Committed Requirements}
